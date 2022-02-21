@@ -1,15 +1,15 @@
 import React from "react"
-import Menu from "./Menu"
+import MenuBar from "./MenuBar"
 import Header from "./Header"
 import Footer from "./Footer"
-import Items from "./Items"
+import ListingItems from "./ListingItems"
 
 function App() {
 
     return <>
     <Header />
-    <Menu />
-    <Items />
+    <MenuBar />
+    <ListingItems />
     <Footer />
     </>
 }

@@ -7,11 +7,16 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import { ThemeProvider } from '@mui/material/styles';
 import './MenuBar.css'
-import GetTheme from './theme.js'
+import { GetTheme, GetPaddedStyle } from './theme.js'
 import MenuButtons from "./MenuButtons";
 
 function MenuBar() {
     const theme = GetTheme()
+    const style = GetPaddedStyle()
+    style.width = { xs: '100%', md: '80%' }
+    style.flexGrow = 1
+    style.marginBottom = '2em'
+    style.padding = 0
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -23,7 +28,7 @@ function MenuBar() {
     };
     
     return <ThemeProvider theme={theme}>
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={style}>
             <AppBar position="static">
             <Toolbar variant="dense">
                 <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2, display: { xs: 'flex', md: 'none' }}} 

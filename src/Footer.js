@@ -1,10 +1,19 @@
 import React from "react"
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { GetPaddedStyle } from './theme.js'
 
 function Footer() {
     
-    return <div id="footer">
-        <p>This is the footer of the site aaaaaaaaaa aaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaa aaa a aaaaaaaaaaaa aaaaaaaaaa</p>
-    </div>
+    const style = GetPaddedStyle()
+
+    return <footer>
+        <Box sx={style}>
+            <Typography variant="body2">
+            This site is a student project for TNPW2. Author: David Továrek 2022
+            </Typography>
+        </Box>
+    </footer>
 }
 
 export default Footer

@@ -14,5 +14,11 @@ function GetTheme(){
     return theme
 }
 
+function GetPaddedStyle(){
+  const style = { padding: '2em', width: '80%', maxWidth: 1500, margin: 'auto' }
 
-export default GetTheme
+  return style
+}
+
+
+export { GetTheme, GetPaddedStyle }

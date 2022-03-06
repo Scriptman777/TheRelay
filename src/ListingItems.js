@@ -60,7 +60,7 @@ function ListingItems(props) {
             <Stack spacing={2} direction="column">
                 <TextField id='crtName' label='Name' variant='outlined' />
                 <TextField id='crtDescription' label='Description' variant='outlined' multiline />
-                <Select id='crtCategory' label="Category">
+                <Select id='crtCategory' value=''>
                     <MenuItem value={10}>Lorem</MenuItem>
                     <MenuItem value={20}>Ipsum</MenuItem>
                     <MenuItem value={30}>Dolor</MenuItem>

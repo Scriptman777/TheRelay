@@ -15,7 +15,7 @@ function MenuBar() {
     const style = GetPaddedStyle()
     style.width = { xs: '100%', md: '80%' }
     style.flexGrow = 1
-    style.marginBottom = '2em'
+    style.marginBottom = '1.5em'
     style.padding = 0
 
     const [anchorEl, setAnchorEl] = React.useState(null);

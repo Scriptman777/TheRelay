@@ -5,6 +5,7 @@ import Landing from "./Landing"
 import ListingItems from "./ListingItems"
 import About from "./About"
 import Legal from "./Legal"
+import Login from "./Login"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -16,9 +17,11 @@ function App() {
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="about" element={<About />} />
-      <Route path="buy" element={<ListingItems />} />
-      <Route path="sell" element={<ListingItems />} />
+      <Route path="buy" element={<ListingItems buy={true}/>} />
+      <Route path="sell" element={<ListingItems buy={false}/>} />
       <Route path="legal" element={<Legal />} />
+      <Route path="login" element={<Login create={false}/>} />
+      <Route path="signup" element={<Login create={true}/>} />
     </Routes>
   </BrowserRouter>
   </div>

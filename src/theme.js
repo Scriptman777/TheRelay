@@ -15,7 +15,7 @@ function GetTheme(){
 }
 
 function GetPaddedStyle(){
-  const style = { padding: '2em', width: '80%', maxWidth: 1500, margin: 'auto' }
+  const style = { padding: '1em', width: '80%', maxWidth: 1500, margin: 'auto' }
 
   return style
 }

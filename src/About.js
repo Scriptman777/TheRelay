@@ -36,7 +36,7 @@ function About() {
         <Grid item xs={12} md={6}>
             <Paper sx={pad}>
                 <Typography variant='h3'>Is my personal information safe?</Typography>
-                <Typography variant="body1">Of course it is! If you have any doubts or concerns, please feel free to contact us. For more information check out the <Link color="black" underline="none" href="/legal">Legal</Link> page</Typography>
+                <Typography variant="body1">Of course it is! If you have any doubts or concerns, please feel free to contact us. For more information check out the <Link href="/legal">Legal</Link> page</Typography>
             </Paper>
         </Grid>
     </Grid>

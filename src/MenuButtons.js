@@ -11,6 +11,7 @@ function MenuButtons() {
     <Link color="black" underline="none" href="/buy"><MenuItem key="Buy">Buy</MenuItem></Link>
     <Link color="black" underline="none" href="/sell"><MenuItem key="Sell">Sell</MenuItem></Link>
     <Link color="black" underline="none" href="/legal"><MenuItem key="Legal">Legal</MenuItem></Link>
+    <Link color="black" underline="none" href="/login"><MenuItem key="Login">Login</MenuItem></Link>
     </>
 
 }

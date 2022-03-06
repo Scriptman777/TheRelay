@@ -6,4 +6,4 @@ import './index.css'
 
 
 
-ReactDOM.render([<App />, <Footer />], document.getElementById("root"))
+ReactDOM.render([<App key="content" />, <Footer key="footer" />], document.getElementById("root"))

@@ -9,6 +9,17 @@ import { GetPaddedStyle } from './theme.js'
 
 function Login(props) {
 
+    const [username, setUsername] = React.useState(' ')
+    const [password, setPassword] = React.useState(' ')
+
+    const usernameUpdate = (event) => {
+        setUsername(event.target.value)
+      }
+
+    const passwordUpdate = (event) => {
+        setPassword(event.target.value)
+    }
+
     const style = GetPaddedStyle()
     style.maxWidth = 500
 
@@ -21,15 +32,37 @@ function Login(props) {
         </Typography>
         name = "Log in"
     }
+
+    
+    const buttonClicked = async (event) => {
+
+        if (props.create) {
+            
+            let newAccount = {test: username, yep: password, number: 42}
+
+            await fetch("http://localhost:5000/record/add", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newAccount),
+              })
+              .then(console.log("ADDED"))
+              .catch(error => {
+                window.alert(error);
+                return;
+              })
+        }
+    }
     
     return <Paper elevation={3} sx={style}>
     <Typography variant="h2">
     {name}
     </Typography>
     <Stack spacing={2} direction="column">
-    <TextField id='username' label='Username' variant='outlined' />
-    <TextField id='password' label='Password' variant='outlined' type="password" autoComplete="current-password" />
-    <Button variant="contained">{name}!</Button>
+    <TextField id='username' label='Username' variant='outlined' onChange={usernameUpdate} />
+    <TextField id='password' label='Password' variant='outlined' onChange={passwordUpdate} type="password" autoComplete="current-password" />
+    <Button variant="contained" onClick={buttonClicked}>{name}!</Button>
     {createPrompt}
 
     </Stack>

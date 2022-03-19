@@ -38,9 +38,9 @@ function Login(props) {
 
         if (props.create) {
             
-            let newAccount = {test: username, yep: password, number: 42}
+            let newAccount = {username: username, password: password}
 
-            await fetch("http://localhost:5000/record/add", {
+            await fetch("http://localhost:5000/account/add", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -64,7 +64,6 @@ function Login(props) {
     <TextField id='password' label='Password' variant='outlined' onChange={passwordUpdate} type="password" autoComplete="current-password" />
     <Button variant="contained" onClick={buttonClicked}>{name}!</Button>
     {createPrompt}
-
     </Stack>
     </Paper>
 }

@@ -19,18 +19,79 @@ import InputAdornment from '@mui/material/InputAdornment'
 
 function ListingItems(props) {
 
+    async function getCategories() {
+        await fetch('http://localhost:5000/category/getAll')
+        .then(response => response.json())
+        .then(data => setAllCategories(data))  
+    }
+
+    async function getListings() {
+        await fetch('http://localhost:5000/listing/getAll')
+        .then(response => response.json())
+        .then(data => setListings(data))  
+    }
+
     const style = GetPaddedStyle()
     const theme = GetTheme()
 
-    const initialListings = [{name: 'Name1', desc: 'Lorem ipsum', price: 100, id: 1},{name: 'Name2', desc: 'Ipsum lorem dolor', price: 200, id: 2},{name: 'Name3', desc: 'Lorem ipsum etc etc 🍔', price: 150, id: 3}]
-
-    const [listings, setListings] = React.useState(initialListings)
+    const [listings, setListings] = React.useState([])
     const [dialogDisplay, setDialogDisplay] = React.useState('none')
+    const [allCategories, setAllCategories] = React.useState([])
+
+    
+    React.useEffect(() => {
+        getCategories()
+        //getListings()
+      })
+
+    //Create dialog states
+    const [category, setCategory] = React.useState('')
+    const [name, setName] = React.useState('')
+    const [description, setDescription] = React.useState('')
+    const [price, setPrice] = React.useState('')
+
+
+    const createListing = async (event) => {
+        let newListing = {userID: "debug-temp", name: name, description: description, category: category, price: price}
+
+            await fetch("http://localhost:5000/listing/add", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newListing),
+              })
+              .then(
+                console.log("Listing added"),
+                setName(''),
+                setDescription(''),
+                setPrice('')
+                )
+              .catch(error => {
+                window.alert(error);
+                return;
+              })
+    }
+
 
     const handleSearchChange = (event) => {
-      let newList = filterListings(initialListings, event.target.value)
-      setListings(newList)
-      console.log(newList)
+      console.log("search")
+    }
+
+    const updateCategory = (event) => {
+        setCategory(event.target.value)
+    }
+
+    const updateName = (event) => {
+        setName(event.target.value)
+    }
+
+    const updateDescription = (event) => {
+        setDescription(event.target.value)
+    }
+
+    const updatePrice = (event) => {
+        setPrice(event.target.value)
     }
 
     const openCreateDialog = (event) => {
@@ -58,15 +119,15 @@ function ListingItems(props) {
             </IconButton>
             <Typography variant='h2'>Create a new listing</Typography>
             <Stack spacing={2} direction="column">
-                <TextField id='crtName' label='Name' variant='outlined' />
-                <TextField id='crtDescription' label='Description' variant='outlined' multiline />
-                <Select id='crtCategory' value=''>
-                    <MenuItem value={10}>Lorem</MenuItem>
-                    <MenuItem value={20}>Ipsum</MenuItem>
-                    <MenuItem value={30}>Dolor</MenuItem>
+                <TextField id='crtName' label='Name' variant='outlined' onChange={updateName}/>
+                <TextField id='crtDescription' label='Description' variant='outlined' multiline onChange={updateDescription} />
+                <Select id='crtCategory' value={category} onChange={updateCategory}>
+                    {allCategories.map((cat) => (
+                    <MenuItem key={cat.name} value={cat.name}>{cat.name}</MenuItem>
+                    ))}
                 </Select>
-                <TextField id='crtPrice' label='Price' variant='outlined' InputProps={{endAdornment: <InputAdornment position="end"> CZK</InputAdornment>}}/>
-                <Button variant="contained" onClick={closeCreateDialog}>Create listing!</Button>
+                <TextField id='crtPrice' label='Price' variant='outlined' InputProps={{endAdornment: <InputAdornment position="end"> CZK</InputAdornment>}} onChange={updatePrice}/>
+                <Button variant="contained" onClick={createListing}>Create listing!</Button>
             </Stack>
         </Paper>
         </Box>
@@ -77,11 +138,11 @@ function ListingItems(props) {
         <TextField id='search' label='Search' variant='outlined' onChange={handleSearchChange} sx={{ float: 'left'}}/>
         <Box sx={{ width: '30%', float: 'left', marginLeft: '2em', marginTop: { xs: '1em', md: '0' }}}>
             <Typography variant='body1'>Max price</Typography>
-            <Slider defaultValue={0} min={0} max={getMaxPrice(initialListings)} valueLabelDisplay="auto" />
+            <Slider defaultValue={0} min={0} max={getMaxPrice(listings)} valueLabelDisplay="auto" />
         </Box>
         </Paper>
         {listings.map((item) => (
-            <Listing key={item.id} name={item.name} text={item.desc} price={item.price}/>
+            <Listing key={item.id} name={item.name} text={item.description} price={item.price} user={item.user} category={item.category} />
         ))}
         {btnCreate}
         {createDialog}
@@ -114,5 +175,6 @@ function filterListings(listings, searchTerm) {
 
     return filteredListings
 }
+
 
 export default ListingItems

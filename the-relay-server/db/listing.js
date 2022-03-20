@@ -3,10 +3,9 @@ const validator = require('validator')
 
 
 const Listing = mongoose.model('Listing', {
-    userID: {
+    user: {
         type: String,
-        required: true,
-        trim: true
+        required: true
     },
     name: {
         type: String,
@@ -18,16 +17,21 @@ const Listing = mongoose.model('Listing', {
         required: true,
         trim: true
     },
+    category: {
+        type: String,
+        required: true,
+        trim: true
+    },
     price: {
         type: Number,
         required: true,
         trim: true,
         validate(value) {
-            if (value > 0) {
-                throw new Error('Price must be higher than 0')
+            if (value < 0) {
+                throw new Error('Price cannot be negative')
             }
         }
-    },
+    }
     })
 
 

@@ -47,7 +47,11 @@ function Login(props) {
                 },
                 body: JSON.stringify(newAccount),
               })
-              .then(console.log("ADDED"))
+              .then(
+                console.log("ADDED"),
+                setUsername(''),
+                setPassword('')
+                )
               .catch(error => {
                 window.alert(error);
                 return;

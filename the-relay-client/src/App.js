@@ -17,8 +17,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="about" element={<About />} />
-      <Route path="buy" element={<ListingItems buy={true}/>} />
-      <Route path="sell" element={<ListingItems buy={false}/>} />
+      <Route path="buy" element={<ListingItems isSale={false}/>} />
+      <Route path="sell" element={<ListingItems isSale={true}/>} />
       <Route path="legal" element={<Legal />} />
       <Route path="login" element={<Login create={false}/>} />
       <Route path="signup" element={<Login create={true}/>} />

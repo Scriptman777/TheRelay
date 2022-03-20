@@ -22,6 +22,10 @@ const Listing = mongoose.model('Listing', {
         required: true,
         trim: true
     },
+    isSale: {
+        type: Boolean,
+        required: true,
+    },
     price: {
         type: Number,
         required: true,

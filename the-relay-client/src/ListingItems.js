@@ -82,7 +82,7 @@ function ListingItems(props) {
             return;
         })
         closeCreateDialog()
-
+        getListings()
     }
 
 
@@ -125,14 +125,14 @@ function ListingItems(props) {
         </IconButton>
         <Typography variant='h2'>Create a new listing</Typography>
         <Stack spacing={2} direction="column">
-            <TextField id='crtName' label='Name' variant='outlined' onChange={updateName}/>
-            <TextField id='crtDescription' label='Description' variant='outlined' multiline onChange={updateDescription} />
+            <TextField id='crtName' label='Name' variant='outlined' onChange={updateName} value={name}/>
+            <TextField id='crtDescription' label='Description' variant='outlined' multiline onChange={updateDescription} value={description}/>
             <Select id='crtCategory' value={category} onChange={updateCategory}>
                 {allCategories.map((cat) => (
                 <MenuItem key={cat.name} value={cat.name}>{cat.name}</MenuItem>
                 ))}
             </Select>
-            <TextField id='crtPrice' label='Price' variant='outlined' InputProps={{endAdornment: <InputAdornment position="end"> CZK</InputAdornment>}} onChange={updatePrice}/>
+            <TextField id='crtPrice' label='Price' variant='outlined' InputProps={{endAdornment: <InputAdornment position="end"> CZK</InputAdornment>}} onChange={updatePrice} value={price}/>
             <Button variant="contained" onClick={createListing}>Create listing!</Button>
         </Stack>
     </Paper>
@@ -148,7 +148,7 @@ function ListingItems(props) {
         </Box>
         </Paper>
         {listings.map((item) => (
-            <Listing key={item._id} name={item.name} text={item.description} price={item.price} user={item.user} category={item.category} />
+            <Listing key={item._id} name={item.name} description={item.description} price={item.price} user={item.user} category={item.category} />
         ))}
 
         <Fab onClick={openCreateDialog} color="primary" sx={{ position: 'fixed', bottom: '10vh', right: '10vw' }}><EditIcon /></Fab>
@@ -169,5 +169,7 @@ function getMaxPrice(listings) {
 
     return max
 }
+
+
 
 export default ListingItems

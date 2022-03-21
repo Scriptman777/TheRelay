@@ -57,6 +57,25 @@ function Login(props) {
                 return;
               })
         }
+        else {
+          let loginInfo = {username: username, password: password}
+
+          await fetch("http://localhost:5000/account/login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(loginInfo),
+              })
+              .then(response => response.json())
+              .then(data => localStorage.setItem("auth-key", data.token))  
+              .catch(error => {
+                window.alert(error);
+                return;
+              })
+          setUsername('')
+          setPassword('')
+        }
     }
     
     return <Paper elevation={3} sx={style}>
@@ -64,8 +83,8 @@ function Login(props) {
     {name}
     </Typography>
     <Stack spacing={2} direction="column">
-    <TextField id='username' label='Username' variant='outlined' onChange={usernameUpdate} />
-    <TextField id='password' label='Password' variant='outlined' onChange={passwordUpdate} type="password" autoComplete="current-password" />
+    <TextField id='username' label='Username' variant='outlined' onChange={usernameUpdate} value={username}/>
+    <TextField id='password' label='Password' variant='outlined' onChange={passwordUpdate} value={password} type="password" autoComplete="current-password" />
     <Button variant="contained" onClick={buttonClicked}>{name}!</Button>
     {createPrompt}
     </Stack>

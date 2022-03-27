@@ -62,7 +62,6 @@ function ListingItems(props) {
             else {
                 setAuthed(false) 
             }
-            
         })
     }
 
@@ -86,6 +85,12 @@ function ListingItems(props) {
     const [name, setName] = React.useState('')
     const [description, setDescription] = React.useState('')
     const [price, setPrice] = React.useState('')
+
+    const [searchTerm, setSearchTerm] = React.useState('')
+
+    function filterListings() {
+        console.log("Search")
+    }
 
 
     const createListing = async (event) => {
@@ -114,9 +119,8 @@ function ListingItems(props) {
         getListings()
     }
 
-
-    const handleSearchChange = (event) => {
-      console.log("search")
+    const updateSearch = (event) => {
+        setSearchTerm(event.target.value)
     }
 
     const updateCategory = (event) => {
@@ -169,12 +173,13 @@ function ListingItems(props) {
     
     if (authed) {
         return <ThemeProvider theme={theme}><Box sx={style}>
-        <Paper elevation={3} sx={{padding: '0.5em', marginBottom: '0.5em', overflow: 'auto'}}>
-        <TextField id='search' label='Search' variant='outlined' onChange={handleSearchChange} sx={{ float: 'left'}}/>
-        <Box sx={{ width: '30%', float: 'left', marginLeft: '2em', marginTop: { xs: '1em', md: '0' }}}>
+        <Paper elevation={3} sx={{padding: '0.5em', marginBottom: '0.5em', overflow: 'auto', display: 'flex', alignItems: 'center', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'center'}}>
+        <TextField id='searchTerm' label='What are you looking for?' variant='outlined' onChange={updateSearch} sx={{ float: 'left'}}/>
+        <Box sx={{ width: { xs: '80%', md: '30%' }, float: 'left', marginLeft: { xs: '0', md: '2em' }, marginTop: { xs: '1em', md: '0' }}}>
             <Typography variant='body1'>Max price</Typography>
             <Slider defaultValue={0} min={0} max={getMaxPrice(listings)} valueLabelDisplay="auto" />
         </Box>
+        <Button variant="contained" onClick={filterListings} sx={{ float: 'left', marginLeft: '2em'}}>Search</Button>
         </Paper>
         {listings.map((item) => (
             <Listing key={item._id} name={item.name} description={item.description} price={item.price} user={item.user} category={item.category} />
@@ -190,9 +195,7 @@ function ListingItems(props) {
 }
 
 function getMaxPrice(listings) {
-    
     let max = 0
-
     listings.forEach(item => {
         if (item.price > max) {
             max = item.price

@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack'
 import Slider from '@mui/material/Slider'
 import Select from '@mui/material/Select'
 import Button from '@mui/material/Button'
+import  { Navigate } from 'react-router-dom'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import EditIcon from '@mui/icons-material/Edit'
@@ -40,17 +41,44 @@ function ListingItems(props) {
 
     }
 
+    async function CheckLogin(){
+        const token = localStorage.getItem('auth-key')
+        if (token == null) {
+            setAuthed(false)
+        }
+
+        const headers = new Headers()
+        headers.append('Content-Type', 'application/json')
+        headers.append('Authorization', token)
+    
+        await fetch('http://localhost:5000/account/me', {
+            method: 'GET',
+            headers: headers,
+          })
+          .then(function(response) {
+            if (response.status === 200) {
+                setAuthed(true)
+            }
+            else {
+                setAuthed(false) 
+            }
+            
+        })
+    }
+
     const style = GetPaddedStyle()
     const theme = GetTheme()
+
 
     const [listings, setListings] = React.useState([])
     const [dialogDisplay, setDialogDisplay] = React.useState('none')
     const [allCategories, setAllCategories] = React.useState([])
+    const [authed, setAuthed] = React.useState(true)
 
-    
     React.useEffect(() => {
         getCategories()
         getListings()
+        CheckLogin()
       }, [])
 
     //Create dialog states
@@ -61,14 +89,15 @@ function ListingItems(props) {
 
 
     const createListing = async (event) => {
-        let newListing = {user: "debug-temp", name: name, description: description, category: category, price: price, isSale: props.isSale}
-        console.log(newListing)
+        let newListing = {name: name, description: description, category: category, price: price, isSale: props.isSale}
+
+        const headers = new Headers()
+        headers.append('Content-Type', 'application/json')
+        headers.append('Authorization', localStorage.getItem('auth-key'))
 
         await fetch("http://localhost:5000/listing/add", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: headers,
             body: JSON.stringify(newListing),
             })
             .then(
@@ -138,8 +167,8 @@ function ListingItems(props) {
     </Paper>
     </Box>
     
-   
-    return <ThemeProvider theme={theme}><Box sx={style}>
+    if (authed) {
+        return <ThemeProvider theme={theme}><Box sx={style}>
         <Paper elevation={3} sx={{padding: '0.5em', marginBottom: '0.5em', overflow: 'auto'}}>
         <TextField id='search' label='Search' variant='outlined' onChange={handleSearchChange} sx={{ float: 'left'}}/>
         <Box sx={{ width: '30%', float: 'left', marginLeft: '2em', marginTop: { xs: '1em', md: '0' }}}>
@@ -154,7 +183,10 @@ function ListingItems(props) {
         <Fab onClick={openCreateDialog} color="primary" sx={{ position: 'fixed', bottom: '10vh', right: '10vw' }}><EditIcon /></Fab>
         {createDialog}
         
-    </Box></ThemeProvider>
+        </Box></ThemeProvider>
+    }   
+    return <Navigate to='/login' />  
+    
 }
 
 function getMaxPrice(listings) {

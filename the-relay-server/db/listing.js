@@ -2,10 +2,11 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 
 
-const Listing = mongoose.model('Listing', {
+const listingSchema = new mongoose.Schema({
     user: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'UserAccount'
     },
     name: {
         type: String,
@@ -36,7 +37,13 @@ const Listing = mongoose.model('Listing', {
             }
         }
     }
+    },
+    {
+        toJSON: {virtuals: true}
     })
+
+
+const Listing = mongoose.model('Listing', listingSchema)
 
 
 module.exports = Listing;

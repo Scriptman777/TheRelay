@@ -8,6 +8,17 @@ const accountSchema =  new mongoose.Schema({
         required: true,
         trim: true
     },
+    email: {
+        type: String,
+        required: true,
+        trim: true,
+        validate(value) {
+            if (!validator.isEmail(value)) {
+                throw new Error('Enter a valid e-mail!')
+            }
+        }
+
+    },
     password: {
         type: String,
         required: true,
@@ -40,6 +51,11 @@ accountSchema.methods.logout = async function () {
     await account.save()
     }
     
+accountSchema.virtual('listings', {
+    ref: 'Listing',
+    localField: '_id',
+    foreignField: 'user'
+    })
 
 const Account = mongoose.model('UserAccount', accountSchema)
 

@@ -4,27 +4,30 @@ require('../db/mongoose')
 const Listing = require('../db/listing')
 const Category = require('../db/category')
 const ObjectId = require("mongodb").ObjectId
+auth = require("../authMiddleware")
 
 
 listingRouter.route("/listing/getAllSell").get(function (req, response) {
-    Listing.find({isSale: true}).then((listings) => {
+    Listing.find({isSale: true}).populate('user').then((listings) => {
       response.status(200).send(listings)
     }).catch((e) => {
+      console.log(e)
       response.status(404).send(e)
     })
 })
 
 listingRouter.route("/listing/getAllBuy").get(function (req, response) {
-    Listing.find({isSale: false}).then((listings) => {
+    Listing.find({isSale: false}).populate('user').then((listings) => {
       response.status(200).send(listings)
     }).catch((e) => {
+      console.log(e)
       response.status(404).send(e)
     })
 })
 
-listingRouter.route("/listing/add").post(function (req, response) {
+listingRouter.route("/listing/add").post(auth, function (req, response) {
     let newListing = new Listing({
-      user: req.body.user,
+      user: req.user,
       name: req.body.name,
       description: req.body.description,
       category: req.body.category,

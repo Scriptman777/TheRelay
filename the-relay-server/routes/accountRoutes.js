@@ -6,12 +6,14 @@ const accountRouter = express.Router()
 require('../db/mongoose')
 const Account = require('../db/account')
 const ObjectId = require("mongodb").ObjectId
+auth = require("../authMiddleware")
 
 
 accountRouter.route("/account/add").post(function (req, response) {
   bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
     let newAccount = new Account({
       username: req.body.username,
+      email: req.body.email,
       password: hash 
       })
       
@@ -20,9 +22,7 @@ accountRouter.route("/account/add").post(function (req, response) {
       }).catch((e) => {
         response.status(418).send(e)
       })
-  })
-    
-
+    })
   })
 
 accountRouter.route("/account/login").post(function (req, response) {
@@ -33,7 +33,6 @@ accountRouter.route("/account/login").post(function (req, response) {
         account.generateAuthToken().then((token) => {
           response.status(200).send({token: token})
         })
-        
       }
       else
       {
@@ -44,9 +43,10 @@ accountRouter.route("/account/login").post(function (req, response) {
   })
 })
 
-accountRouter.route("/account/logout").post(function (req, response) {
-  Account.findOne({username: req.body.username}).then((account) => {
-     response.status(200).send({status: "User logged out"})
+accountRouter.route("/account/logout").get(auth, function (req, response) {
+  Account.findOne({_id: req.user}).then((account) => {
+     account.tokens = []
+     account.save().then(response.status(200).send({status: "User logged out"}))
   }).catch((e) => {
     response.status(404).send(e)
   })
@@ -66,6 +66,10 @@ accountRouter.route("/account/getByID").get(function (req, response) {
   }).catch((e) => {
     response.status(404).send(e)
   })
+})
+
+accountRouter.route("/account/me").get(auth, function (req, response) {
+  response.send(req.user)
 })
 
 

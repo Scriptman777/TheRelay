@@ -22,7 +22,7 @@ function Listing(props) {
                         <AccountCircleIcon />
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary="User" secondary={props.user} />
+                <ListItemText primary="User" secondary={props.user.username} />
             </ListItem>
             <ListItem>
                 <ListItemAvatar>

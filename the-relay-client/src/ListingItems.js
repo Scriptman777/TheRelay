@@ -17,6 +17,10 @@ import IconButton from '@mui/material/IconButton'
 import { GetTheme, GetPaddedStyle } from './theme.js'
 import { ThemeProvider } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 function ListingItems(props) {
 
@@ -28,17 +32,14 @@ function ListingItems(props) {
 
     async function getListings() {
 
-        if (props.isSale) {
-            await fetch('http://localhost:5000/listing/getAllSell')
-            .then(response => response.json())
+        await fetch("http://localhost:5000/listing/getFiltered", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({isSale: props.isSale}),
+            }).then(response => response.json())
             .then(data => setListings(data))  
-        }
-        else {
-            await fetch('http://localhost:5000/listing/getAllBuy')
-            .then(response => response.json())
-            .then(data => setListings(data))  
-        }
-
     }
 
     async function CheckLogin(){
@@ -86,12 +87,52 @@ function ListingItems(props) {
     const [description, setDescription] = React.useState('')
     const [price, setPrice] = React.useState('')
 
+    //Create search states
     const [searchTerm, setSearchTerm] = React.useState('')
+    const [searchPrice, setSearchPrice] = React.useState(0)
+    const [searchCategory, setSearchCategory] = React.useState('')
 
-    function filterListings() {
-        console.log("Search")
+    async function filterListings() {
+
+        let textFilter = []
+        let additionalFilter = []
+
+        if (searchTerm.length > 1) {
+            textFilter.push({name: {"$regex": searchTerm, "$options": "i" }})
+            textFilter.push({description: {"$regex": searchTerm, "$options": "i" }})
+        }
+
+        if (searchPrice > 0) {
+            additionalFilter.push({price: {"$lt": searchPrice}})
+        }
+
+        if (searchCategory !== "") {
+            additionalFilter.push({category: searchCategory})
+        }
+
+        if (textFilter.length < 1) {
+            textFilter.push({})
+        }
+
+        additionalFilter.push({isSale: props.isSale})
+
+        let searchFilter = {"$or": textFilter, "$and": additionalFilter}
+
+        console.log(searchFilter)
+        await fetch("http://localhost:5000/listing/getFiltered", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(searchFilter),
+                }).then(response => response.json())
+                .then(data => setListings(data))  
     }
 
+    function resetFilter() {
+        setSearchCategory('')
+        getListings()
+    }
 
     const createListing = async (event) => {
         let newListing = {name: name, description: description, category: category, price: price, isSale: props.isSale}
@@ -121,6 +162,14 @@ function ListingItems(props) {
 
     const updateSearch = (event) => {
         setSearchTerm(event.target.value)
+    }
+
+    const updateSearchPrice = (event) => {
+        setSearchPrice(event.target.value)
+    }
+
+    const updateSearchCategory = (event) => {
+        setSearchCategory(event.target.value)
     }
 
     const updateCategory = (event) => {
@@ -173,14 +222,33 @@ function ListingItems(props) {
     
     if (authed) {
         return <ThemeProvider theme={theme}><Box sx={style}>
-        <Paper elevation={3} sx={{padding: '0.5em', marginBottom: '0.5em', overflow: 'auto', display: 'flex', alignItems: 'center', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'center'}}>
+        <Accordion elevation={5} sx={{marginBottom: '1em'}}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="searchPanel-content"
+          id="searchPanel-header"
+          sx={{backgroundColor: '#999999'}}
+        >
+          <Typography variant="h5">Listing filters</Typography>
+        </AccordionSummary>
+        <AccordionDetails sx={{padding: '0.5em', marginBottom: '0.5em', overflow: 'auto', display: 'flex', alignItems: 'center', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'center'}}>
         <TextField id='searchTerm' label='What are you looking for?' variant='outlined' onChange={updateSearch} sx={{ float: 'left'}}/>
         <Box sx={{ width: { xs: '80%', md: '30%' }, float: 'left', marginLeft: { xs: '0', md: '2em' }, marginTop: { xs: '1em', md: '0' }}}>
             <Typography variant='body1'>Max price</Typography>
-            <Slider defaultValue={0} min={0} max={getMaxPrice(listings)} valueLabelDisplay="auto" />
+            <Slider defaultValue={0} min={0} max={getMaxPrice(listings)} onChange={updateSearchPrice} valueLabelDisplay="auto" />
         </Box>
-        <Button variant="contained" onClick={filterListings} sx={{ float: 'left', marginLeft: '2em'}}>Search</Button>
-        </Paper>
+        <Select id='srchCategory' value={searchCategory} onChange={updateSearchCategory} sx={{width: { xs: '80%', md: '20%'}, marginLeft: '1em'}}>
+            <MenuItem key={"defaultCat"} value={""}>{"No filter"}</MenuItem>
+            {
+            allCategories.map((cat) => (
+            <MenuItem key={cat.name} value={cat.name}>{cat.name}</MenuItem>
+            ))}      
+        </Select>
+        <Button variant="contained" onClick={filterListings} sx={{ float: 'left', marginLeft: '1em', marginTop:{ xs: '1em', md: '0'}}}>Search</Button>
+        <Button variant="outlined" onClick={resetFilter} sx={{ float: 'left', marginLeft: '1em', marginTop:{ xs: '1em', md: '0'}}}>Reset</Button>
+        </AccordionDetails>
+      </Accordion>
+        
         {listings.map((item) => (
             <Listing key={item._id} name={item.name} description={item.description} price={item.price} user={item.user} category={item.category} />
         ))}

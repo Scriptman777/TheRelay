@@ -25,6 +25,15 @@ listingRouter.route("/listing/getAllBuy").get(function (req, response) {
     })
 })
 
+listingRouter.route("/listing/getFiltered").post(function (req, response) {
+  Listing.find(req.body).populate('user').then((listings) => {
+    response.status(200).send(listings)
+  }).catch((e) => {
+    console.log(e)
+    response.status(404).send(e)
+  })
+})
+
 listingRouter.route("/listing/add").post(auth, function (req, response) {
     let newListing = new Listing({
       user: req.user,

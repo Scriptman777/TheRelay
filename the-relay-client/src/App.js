@@ -6,6 +6,7 @@ import ListingItems from "./ListingItems"
 import About from "./About"
 import Legal from "./Legal"
 import Login from "./Login"
+import Account from "./Account"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
       <Route path="legal" element={<Legal />} />
       <Route path="login" element={<Login create={false}/>} />
       <Route path="signup" element={<Login create={true}/>} />
+      <Route path="myaccount" element={<Account create={true}/>} />
     </Routes>
   </BrowserRouter>
   </div>

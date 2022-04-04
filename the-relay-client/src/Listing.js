@@ -9,6 +9,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Button from '@mui/material/Button'
 
 function Listing(props) {
     
@@ -41,7 +42,9 @@ function Listing(props) {
                 <ListItemText primary="Price" secondary={props.price + " CZK"} />
             </ListItem>
         </List>
+        
         <Typography variant='body1' sx={{padding:'0.5em'}}>{props.description}</Typography>
+        <Button variant="contained" sx={{padding:'0.5em'}} href={'mailto:' + props.user.email + '?subject=I have seen your post: ' + props.name + ' and I am intereted!'}>I am interested!</Button>
     </Paper>
 }
 

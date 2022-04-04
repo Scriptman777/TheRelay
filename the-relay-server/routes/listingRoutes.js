@@ -34,6 +34,39 @@ listingRouter.route("/listing/getFiltered").post(function (req, response) {
   })
 })
 
+listingRouter.route("/listing/getUserListings").get(auth, function (req, response) {
+  Listing.find({user: req.user._id}).then((listings) => {
+    response.status(200).send(listings)
+  }).catch((e) => {
+    console.log(e)
+    response.status(404).send(e)
+  })
+})
+
+listingRouter.route("/listing/update").post(auth, function (req, response) {
+  Listing.findById(req.body.id).then((updatedListing) => {
+    updatedListing.name = req.body.name
+    updatedListing.description = req.body.description
+    updatedListing.category = req.body.category
+    updatedListing.price = req.body.price
+  
+    updatedListing.save().then(() => {
+      response.status(201).send(newListing)
+    }).catch((e) => {
+      response.status(418).send(e)
+    })
+  })
+})
+
+listingRouter.route("/listing/delete").post(auth, function (req, response) {
+  Listing.deleteOne({ _id: req.body.id }).then(() => {
+    response.status(200).send(newListing)
+  }).catch((e) => {
+    response.status(418).send(e)
+  })
+})
+
+
 listingRouter.route("/listing/add").post(auth, function (req, response) {
     let newListing = new Listing({
       user: req.user,

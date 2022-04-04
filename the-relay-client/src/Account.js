@@ -1,0 +1,81 @@
+import React from "react"
+import  { Navigate } from 'react-router-dom'
+import EditableListing from  "./EditableListing"   
+import { GetTheme, GetPaddedStyle } from './theme.js'
+import { ThemeProvider } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+
+
+function Account() {
+
+    const style = GetPaddedStyle()
+    const theme = GetTheme()
+
+    const [authed, setAuthed] = React.useState(true)
+    const [listings, setListings] = React.useState([])
+
+    React.useEffect(() => {
+        getUserListings()
+      }, [])
+
+    async function CheckLogin(){
+        const token = localStorage.getItem('auth-key')
+        if (token == null) {
+            setAuthed(false)
+        }
+
+        const headers = new Headers()
+        headers.append('Content-Type', 'application/json')
+        headers.append('Authorization', token)
+    
+        await fetch('http://localhost:5000/account/me', {
+            method: 'GET',
+            headers: headers,
+          })
+          .then(function(response) {
+            if (response.status === 200) {
+                setAuthed(true)
+            }
+            else {
+                setAuthed(false) 
+            }
+        })
+    }
+
+    async function getUserListings() {
+        const token = localStorage.getItem('auth-key')
+        if (token == null) {
+            setAuthed(false)
+        }
+
+        const headers = new Headers()
+        headers.append('Content-Type', 'application/json')
+        headers.append('Authorization', token)
+
+        await fetch("http://localhost:5000/listing/getUserListings", {
+            method: "GET",
+            headers: headers,
+            }).then(response => response.json())
+            .then(data => setListings(data))  
+    }
+
+    CheckLogin()
+
+
+    if (authed) {
+        return <ThemeProvider theme={theme}><Box sx={style}>
+            
+            <Typography variant="h3" sx={{padding:'1em'}}>My listings</Typography>
+            {listings.map((item) => (
+            <EditableListing key={item._id} id={item._id} name={item.name} description={item.description} price={item.price} user={item.user} category={item.category} />
+        ))}</Box></ThemeProvider>
+        
+    }
+    return <Navigate to='/login' />  
+
+}
+
+
+
+export default Account

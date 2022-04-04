@@ -17,10 +17,10 @@ import IconButton from '@mui/material/IconButton'
 import { GetTheme, GetPaddedStyle } from './theme.js'
 import { ThemeProvider } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 function ListingItems(props) {
 

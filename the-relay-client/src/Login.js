@@ -87,6 +87,7 @@ function Login(props) {
           setUsername('')
           setPassword('')
           setEmail('')
+          document.location.href="/";
         }
     }
     

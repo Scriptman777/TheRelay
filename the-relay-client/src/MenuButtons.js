@@ -52,8 +52,10 @@ function MenuButtons() {
     
 
     let logInOut = <Link color="black" underline="none" href="/login"><MenuItem key="Login">Login</MenuItem></Link>
+    let myAcc = <></>
     if (authed) {
         logInOut = <Link color="black" underline="none" href="/"><MenuItem key="Logout" onClick={logout}>Logout</MenuItem></Link>
+        myAcc = <Link color="black" underline="none" href="/myaccount"><MenuItem key="MyAcc">My listings</MenuItem></Link>
     }
 
 
@@ -64,6 +66,7 @@ function MenuButtons() {
     <Link color="black" underline="none" href="/buy"><MenuItem key="Buy">Buy</MenuItem></Link>
     <Link color="black" underline="none" href="/sell"><MenuItem key="Sell">Sell</MenuItem></Link>
     <Link color="black" underline="none" href="/legal"><MenuItem key="Legal">Legal</MenuItem></Link>
+    {myAcc}
     {logInOut}
     </>
 

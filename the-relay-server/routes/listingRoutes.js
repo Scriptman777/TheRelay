@@ -51,18 +51,19 @@ listingRouter.route("/listing/update").post(auth, function (req, response) {
     updatedListing.price = req.body.price
   
     updatedListing.save().then(() => {
-      response.status(201).send(newListing)
+      response.status(201).send(updatedListing)
     }).catch((e) => {
-      response.status(418).send(e)
+      console.log(e)
+      response.status(400).send(e)
     })
   })
 })
 
 listingRouter.route("/listing/delete").post(auth, function (req, response) {
   Listing.deleteOne({ _id: req.body.id }).then(() => {
-    response.status(200).send(newListing)
+    response.status(200).send({message: "Deleted"})
   }).catch((e) => {
-    response.status(418).send(e)
+    response.status(400).send(e)
   })
 })
 

@@ -50,12 +50,19 @@ function EditableListing(props) {
             headers: headers,
             body: JSON.stringify(updatedListing),
             })
-            .then(
-                window.location.reload()
-            )
-            .catch(error => {
-            window.alert(error);
-            return;
+            .then(response => {
+                if (response.status !== 201)
+                {
+                  response.json().then(data => window.alert("Could not update listing because of the following error:\n" + data.message))
+                  return
+                }
+                else {
+                    window.location.reload()
+                }
+            })
+            .catch(err => {
+            window.alert(err)
+            return
         })
     }
 
@@ -73,9 +80,16 @@ function EditableListing(props) {
                 headers: headers,
                 body: JSON.stringify(listingToDelete),
                 })
-                .then(
-                    window.location.reload()
-                )
+                .then(response => {
+                    if (response.status !== 200)
+                    {
+                      response.json().then(data => window.alert("Could not delete listing because of the following error:\n" + data.message))
+                      return
+                    }
+                    else {
+                        window.location.reload()
+                    }
+                })
                 .catch(error => {
                 window.alert(error);
                 return;

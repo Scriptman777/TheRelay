@@ -57,16 +57,19 @@ function Login(props) {
                 },
                 body: JSON.stringify(newAccount),
               })
-              .then(
-                console.log("ADDED"),
-                setUsername(''),
-                setPassword(''),
+              .then(response => {
+                if (response.status !== 200){
+                  response.json().then(data => window.alert("Could not create account because of the following error:\n" + data.message))
+                  return
+                }
+                setUsername('')
+                setPassword('')
                 setEmail('')
-                )
-              .catch(error => {
-                window.alert(error);
-                return;
-              })
+            })
+            .catch(err => {
+              window.alert("Could not create account because of the following error:\n" + err)
+            return
+            })
         }
         else {
           let loginInfo = {username: username, password: password}
@@ -78,16 +81,24 @@ function Login(props) {
                 },
                 body: JSON.stringify(loginInfo),
               })
-              .then(response => response.json())
-              .then(data => localStorage.setItem("auth-key", data.token))  
-              .catch(error => {
-                window.alert(error);
-                return;
+              .then(response => {
+                if (response.status !== 200){
+                  response.json().then(data => window.alert("Could not log in because of the following error:\n" + data.message))
+                  return
+                }
+                else {
+                  response.json().then(data => {
+                    localStorage.setItem("auth-key", data.token)
+                    setUsername('')
+                    setPassword('')
+                    setEmail('')
+                    document.location.href="/"
+                  })
+                }
               })
-          setUsername('')
-          setPassword('')
-          setEmail('')
-          document.location.href="/";
+              .catch(err => {
+                window.alert(err)
+              })
         }
     }
     

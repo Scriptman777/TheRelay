@@ -27,7 +27,11 @@ function ListingItems(props) {
     async function getCategories() {
         await fetch('http://localhost:5000/category/getAll')
         .then(response => response.json())
-        .then(data => setAllCategories(data))  
+        .then(data => setAllCategories(data))
+        .catch(err => {
+            window.alert("An error occured when loading data:\n" + err + "\n If the problem presists, contact the site administrators")
+        return
+        })  
     }
 
     async function getListings() {
@@ -39,7 +43,11 @@ function ListingItems(props) {
             },
             body: JSON.stringify({isSale: props.isSale}),
             }).then(response => response.json())
-            .then(data => setListings(data))  
+            .then(data => setListings(data))
+            .catch(err => {
+                window.alert("An error occured when loading listings:\n" + err + "\n If the problem presists, contact the site administrators")
+            return
+            })
     }
 
     async function CheckLogin(){
@@ -103,7 +111,7 @@ function ListingItems(props) {
         }
 
         if (searchPrice > 0) {
-            additionalFilter.push({price: {"$lt": searchPrice}})
+            additionalFilter.push({price: {"$lt": searchPrice+1}})
         }
 
         if (searchCategory !== "") {
@@ -126,7 +134,11 @@ function ListingItems(props) {
                 },
                 body: JSON.stringify(searchFilter),
                 }).then(response => response.json())
-                .then(data => setListings(data))  
+                .then(data => setListings(data))
+                .catch(err => {
+                    window.alert("An error occured when loading listings:\n" + err + "\n If the problem presists, contact the site administrators")
+                    return
+                })
     }
 
     function resetFilter() {
@@ -147,14 +159,13 @@ function ListingItems(props) {
             body: JSON.stringify(newListing),
             })
             .then(
-            console.log("Listing added"),
             setName(''),
             setDescription(''),
             setPrice('')
             )
-            .catch(error => {
-            window.alert(error);
-            return;
+            .catch(err => {
+                window.alert("An error occured when creating listing:\n" + err + "\n If the problem presists, contact the site administrators")
+            return
         })
         closeCreateDialog()
         getListings()
@@ -269,7 +280,6 @@ function getMaxPrice(listings) {
             max = item.price
         }
     })
-
     return max
 }
 

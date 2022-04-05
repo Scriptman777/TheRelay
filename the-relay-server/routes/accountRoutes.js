@@ -1,26 +1,32 @@
 const express = require("express")
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 const saltRounds = 10
 const accountRouter = express.Router()
 require('../db/mongoose')
 const Account = require('../db/account')
-const ObjectId = require("mongodb").ObjectId
 auth = require("../authMiddleware")
 
 
 accountRouter.route("/account/add").post(function (req, response) {
   bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+
     let newAccount = new Account({
       username: req.body.username,
       email: req.body.email,
       password: hash 
       })
-      
-      newAccount.save().then(() => {
-        response.status(201).send(newAccount)
-      }).catch((e) => {
-        response.status(418).send(e)
+
+      Account.findOne({email: newAccount.email}).then((exists) => {
+        if (exists) { 
+          response.status(400).send({message: "Entered e-mail already in use"})
+        }
+        else {
+          newAccount.save().then(() => {
+            response.status(201).send(newAccount)
+          }).catch((e) => {
+            response.status(500).send(e)
+          })
+        }
       })
     })
   })
@@ -36,17 +42,17 @@ accountRouter.route("/account/login").post(function (req, response) {
       }
       else
       {
-        response.status(403).send({error: "Wrong password"})
+        response.status(403).send({message: "Incorrect username or password"})
       }
   }).catch((e) => {
-    response.status(404).send(e)
+    response.status(404).send({message: "User could not be found"})
   })
 })
 
 accountRouter.route("/account/logout").get(auth, function (req, response) {
   Account.findOne({_id: req.user}).then((account) => {
      account.tokens = []
-     account.save().then(response.status(200).send({status: "User logged out"}))
+     account.save().then(response.status(200).send({message: "User logged out"}))
   }).catch((e) => {
     response.status(404).send(e)
   })
@@ -56,7 +62,7 @@ accountRouter.route("/account/getAll").get(function (req, response) {
   Account.find({}).then((accounts) => {
     response.status(200).send(accounts)
   }).catch((e) => {
-    response.status(418).send(e)
+    response.status(404).send(e)
   })
 })
 

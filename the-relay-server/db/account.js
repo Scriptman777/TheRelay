@@ -22,12 +22,7 @@ const accountSchema =  new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        trim: true,
-        validate(value) {
-            if (value.length < 8) {
-                throw new Error('Password needs to have at least 8 characters')
-            }
-        }
+        trim: true
     },
     tokens: [{
         token: {

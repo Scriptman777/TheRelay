@@ -13,7 +13,7 @@ function Landing() {
     Welcome!
     </Typography>
     <Typography variant="body1" display="block">
-    Welcome to The Relay. A site that facilitates buying and selling of goods among users. There is no need to register if you want to buy something, you can just contact the seller directly. However, if you want to sell an item, you will need to create an account first, but don't worry, it takes just a minute! 
+    Welcome to The Relay. A site that facilitates buying and selling of goods among users. You will need to create an account first, but don't worry, it takes just a minute! We hope you enjoy using our services! 
     </Typography>
     </Paper>
 }

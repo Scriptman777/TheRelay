@@ -58,24 +58,8 @@ accountRouter.route("/account/logout").get(auth, function (req, response) {
   })
 })
 
-accountRouter.route("/account/getAll").get(function (req, response) {
-  Account.find({}).then((accounts) => {
-    response.status(200).send(accounts)
-  }).catch((e) => {
-    response.status(404).send(e)
-  })
-})
-
-accountRouter.route("/account/getByID").get(function (req, response) {
-  Account.find({_id: req.body.id}).then((account) => {
-    response.status(200).send(account)
-  }).catch((e) => {
-    response.status(404).send(e)
-  })
-})
-
 accountRouter.route("/account/me").get(auth, function (req, response) {
-  response.send(req.user)
+  response.send(req.user.username)
 })
 
 

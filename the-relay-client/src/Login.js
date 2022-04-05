@@ -58,13 +58,14 @@ function Login(props) {
                 body: JSON.stringify(newAccount),
               })
               .then(response => {
-                if (response.status !== 200){
+                if (response.status !== 201) {
                   response.json().then(data => window.alert("Could not create account because of the following error:\n" + data.message))
                   return
                 }
                 setUsername('')
                 setPassword('')
                 setEmail('')
+                document.location.href="/login"
             })
             .catch(err => {
               window.alert("Could not create account because of the following error:\n" + err)

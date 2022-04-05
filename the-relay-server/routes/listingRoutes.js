@@ -7,24 +7,6 @@ const ObjectId = require("mongodb").ObjectId
 auth = require("../authMiddleware")
 
 
-listingRouter.route("/listing/getAllSell").get(function (req, response) {
-    Listing.find({isSale: true}).populate('user').then((listings) => {
-      response.status(200).send(listings)
-    }).catch((e) => {
-      console.log(e)
-      response.status(404).send(e)
-    })
-})
-
-listingRouter.route("/listing/getAllBuy").get(function (req, response) {
-    Listing.find({isSale: false}).populate('user').then((listings) => {
-      response.status(200).send(listings)
-    }).catch((e) => {
-      console.log(e)
-      response.status(404).send(e)
-    })
-})
-
 listingRouter.route("/listing/getFiltered").post(function (req, response) {
   Listing.find(req.body).populate('user').then((listings) => {
     response.status(200).send(listings)
@@ -54,7 +36,7 @@ listingRouter.route("/listing/update").post(auth, function (req, response) {
       response.status(201).send(updatedListing)
     }).catch((e) => {
       console.log(e)
-      response.status(400).send(e)
+      response.status(500).send(e)
     })
   })
 })
@@ -63,7 +45,7 @@ listingRouter.route("/listing/delete").post(auth, function (req, response) {
   Listing.deleteOne({ _id: req.body.id }).then(() => {
     response.status(200).send({message: "Deleted"})
   }).catch((e) => {
-    response.status(400).send(e)
+    response.status(500).send(e)
   })
 })
 
@@ -81,7 +63,7 @@ listingRouter.route("/listing/add").post(auth, function (req, response) {
     newListing.save().then(() => {
       response.status(201).send(newListing)
     }).catch((e) => {
-      response.status(418).send(e)
+      response.status(500).send(e)
     })
   })
   

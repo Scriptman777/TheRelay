@@ -6,13 +6,14 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import { GetPaddedStyle } from './theme.js'
 
-
+// Screen with description of the site
 function About() {
 
-
+    // Init style
     const style = GetPaddedStyle()
     const pad = {padding: '1.5em'}
     
+    // Grid of paper with short articles, turns into a column on small screens
     return <Box sx={style}>
     <Grid container spacing={2} alignItems="stretch">
         <Grid item xs={12} md={6}>

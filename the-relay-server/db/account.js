@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const jwt = require('jsonwebtoken')
 
+// Mongoose Schema for account
 const accountSchema =  new mongoose.Schema({
     username: {
         type: String,
@@ -17,13 +18,13 @@ const accountSchema =  new mongoose.Schema({
                 throw new Error('Enter a valid e-mail!')
             }
         }
-
     },
     password: {
         type: String,
         required: true,
         trim: true
     },
+    // Login tokens
     tokens: [{
         token: {
         type: String,
@@ -32,6 +33,7 @@ const accountSchema =  new mongoose.Schema({
         }]
     })
 
+// Add method do generate token
 accountSchema.methods.generateAuthToken = async function () {
     const account = this
     const token = jwt.sign({ _id: account._id.toString() }, 'CorrectH0rseBatteryStap1e')
@@ -46,12 +48,14 @@ accountSchema.methods.logout = async function () {
     await account.save()
     }
     
+// Add ref to listings
 accountSchema.virtual('listings', {
     ref: 'Listing',
     localField: '_id',
     foreignField: 'user'
     })
 
+// Create model
 const Account = mongoose.model('UserAccount', accountSchema)
 
 

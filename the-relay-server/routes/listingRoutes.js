@@ -6,7 +6,9 @@ const Category = require('../db/category')
 const ObjectId = require("mongodb").ObjectId
 auth = require("../authMiddleware")
 
+// Router for all account-related operations
 
+// Get listings from DB by a filter opr unfiltered if no filter provided
 listingRouter.route("/listing/getFiltered").post(function (req, response) {
   Listing.find(req.body).populate('user').then((listings) => {
     response.status(200).send(listings)
@@ -16,6 +18,7 @@ listingRouter.route("/listing/getFiltered").post(function (req, response) {
   })
 })
 
+// Get listings belonging to a user
 listingRouter.route("/listing/getUserListings").get(auth, function (req, response) {
   Listing.find({user: req.user._id}).then((listings) => {
     response.status(200).send(listings)
@@ -25,6 +28,7 @@ listingRouter.route("/listing/getUserListings").get(auth, function (req, respons
   })
 })
 
+// Update a listing
 listingRouter.route("/listing/update").post(auth, function (req, response) {
   Listing.findById(req.body.id).then((updatedListing) => {
     updatedListing.name = req.body.name
@@ -41,6 +45,7 @@ listingRouter.route("/listing/update").post(auth, function (req, response) {
   })
 })
 
+// Delete the listing
 listingRouter.route("/listing/delete").post(auth, function (req, response) {
   Listing.deleteOne({ _id: req.body.id }).then(() => {
     response.status(200).send({message: "Deleted"})
@@ -49,7 +54,7 @@ listingRouter.route("/listing/delete").post(auth, function (req, response) {
   })
 })
 
-
+// Create a new listing
 listingRouter.route("/listing/add").post(auth, function (req, response) {
     let newListing = new Listing({
       user: req.user,

@@ -9,8 +9,10 @@ import Login from "./Login"
 import Account from "./Account"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+// Main component of the app
 function App() {
 
+  // Router serves to navigate to different page contents, rest of the page components are always the same
     return <div id="content">
     <Header />
     <MenuBar />

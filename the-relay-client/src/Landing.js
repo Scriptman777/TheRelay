@@ -3,8 +3,10 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { GetPaddedStyle } from './theme.js'
 
+// First page the user sees when entering the site
 function Landing() {
 
+    // Init style
     const style = GetPaddedStyle()
     style.maxWidth = 500
     

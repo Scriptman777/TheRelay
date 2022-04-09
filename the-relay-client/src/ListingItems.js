@@ -22,8 +22,10 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
+// Main page for displaying listings, both for sale and purchase (determined by props)
 function ListingItems(props) {
 
+    // Fetches to get necessary data
     async function getCategories() {
         await fetch('http://localhost:5000/category/getAll')
         .then(response => response.json())
@@ -74,20 +76,15 @@ function ListingItems(props) {
         })
     }
 
+    // Init style
     const style = GetPaddedStyle()
     const theme = GetTheme()
 
-
+    // Create states for the overall listings
     const [listings, setListings] = React.useState([])
     const [dialogDisplay, setDialogDisplay] = React.useState('none')
     const [allCategories, setAllCategories] = React.useState([])
     const [authed, setAuthed] = React.useState(true)
-
-    React.useEffect(() => {
-        getCategories()
-        getListings()
-        CheckLogin()
-      }, [])
 
     //Create dialog states
     const [category, setCategory] = React.useState('')
@@ -100,6 +97,14 @@ function ListingItems(props) {
     const [searchPrice, setSearchPrice] = React.useState(0)
     const [searchCategory, setSearchCategory] = React.useState('')
 
+    // Load data on init
+    React.useEffect(() => {
+        getCategories()
+        getListings()
+        CheckLogin()
+      }, [])
+
+    // Function for the search bar to filter listings
     async function filterListings() {
 
         let textFilter = []
@@ -141,11 +146,13 @@ function ListingItems(props) {
                 })
     }
 
+    // Reset loads unfiltered listings, but keeps filtered values for re-use
     function resetFilter() {
         setSearchCategory('')
         getListings()
     }
 
+    // Creating listing from the dialog
     const createListing = async (event) => {
         let newListing = {name: name, description: description, category: category, price: price, isSale: props.isSale}
 
@@ -171,6 +178,7 @@ function ListingItems(props) {
         getListings()
     }
 
+    // State updates from user input
     const updateSearch = (event) => {
         setSearchTerm(event.target.value)
     }
@@ -207,10 +215,12 @@ function ListingItems(props) {
         setDialogDisplay('none')
     }
 
+    // Additional style
     let paperStyle = Object.assign({}, style)
     paperStyle.maxWidth = 500
     paperStyle.marginTop = '5em'
 
+    // Dialog for creating listings
     const createDialog = <Box sx={{height: '100vh', width: '100vw', backgroundColor: '#000000aa', position: 'fixed', bottom: '0', right: '0', display: dialogDisplay}}>
     <Paper elevation={3} sx={paperStyle}>
         <IconButton onClick={closeCreateDialog} sx={{float: 'right'}}>
@@ -231,6 +241,7 @@ function ListingItems(props) {
     </Paper>
     </Box>
     
+    // If user is not logged, redirect to login
     if (authed) {
         return <ThemeProvider theme={theme}><Box sx={style}>
         <Accordion elevation={5} sx={{marginBottom: '1em'}}>
@@ -273,6 +284,7 @@ function ListingItems(props) {
     
 }
 
+// Get max price for the slider
 function getMaxPrice(listings) {
     let max = 0
     listings.forEach(item => {
@@ -282,7 +294,5 @@ function getMaxPrice(listings) {
     })
     return max
 }
-
-
 
 export default ListingItems

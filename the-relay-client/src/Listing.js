@@ -11,8 +11,10 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Button from '@mui/material/Button'
 
+// One listing to be displayed in a list
 function Listing(props) {
     
+    // All displayed values come from the props 
     return <Paper elevation={3} sx={{marginBottom: '1em', padding: '0.5em'}}>
 
         <Typography variant="h4" sx={{padding:'1em'}}>{props.name}</Typography>

@@ -2,6 +2,8 @@ const express = require("express")
 const cors = require("cors")
 const app = express()
 
+// Main file to start server
+
 const port = 5000
 
 app.use(cors())

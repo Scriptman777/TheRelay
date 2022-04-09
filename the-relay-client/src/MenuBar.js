@@ -10,7 +10,10 @@ import './MenuBar.css'
 import { GetTheme, GetPaddedStyle } from './theme.js'
 import MenuButtons from "./MenuButtons";
 
+// Main navigation component for the page
 function MenuBar() {
+
+    // Init style
     const theme = GetTheme()
     const style = GetPaddedStyle()
     style.width = { xs: '100%', md: '80%' }
@@ -18,8 +21,11 @@ function MenuBar() {
     style.marginBottom = '1.5em'
     style.padding = 0
 
+    // Create state for mobile menu
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
+    // Handlers for mobile menu
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
@@ -27,6 +33,7 @@ function MenuBar() {
       setAnchorEl(null);
     };
     
+    // Component is a toolbar with MenuButtons
     return <ThemeProvider theme={theme}>
         <Box sx={style}>
             <AppBar position="static">

@@ -3,8 +3,10 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { GetPaddedStyle } from './theme.js'
 
+// Page containing the end user licence agreement
 function Legal() {
 
+    // Init style
     const style = GetPaddedStyle()
     style.maxWidth = 1000
     

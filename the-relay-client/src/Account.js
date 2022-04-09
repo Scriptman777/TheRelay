@@ -6,19 +6,24 @@ import { ThemeProvider } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
-
+// Screen with user's listings
 function Account() {
 
+    // Init style
     const style = GetPaddedStyle()
     const theme = GetTheme()
 
+    // Create states
     const [authed, setAuthed] = React.useState(true)
     const [listings, setListings] = React.useState([])
 
+    // Get listings on component load
     React.useEffect(() => {
         getUserListings()
       }, [])
 
+
+    // Fetch functions 
     async function CheckLogin(){
         const token = localStorage.getItem('auth-key')
         if (token == null) {
@@ -63,6 +68,7 @@ function Account() {
     CheckLogin()
 
 
+    // Display site only if user is logged in, otherwise go to login
     if (authed) {
         return <ThemeProvider theme={theme}><Box sx={style}>
             

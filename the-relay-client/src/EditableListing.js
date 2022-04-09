@@ -8,20 +8,24 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 
+// Listing that can be edited by the user
 function EditableListing(props) {
 
+    // Init states based on props
     const [allCategories, setAllCategories] = React.useState([])
     const [category, setCategory] = React.useState(props.category)
     const [name, setName] = React.useState(props.name)
     const [description, setDescription] = React.useState(props.description)
     const [price, setPrice] = React.useState(props.price)
 
+    // Fetch categories
     async function getCategories() {
         await fetch('http://localhost:5000/category/getAll')
         .then(response => response.json())
         .then(data => setAllCategories(data))  
     }
-
+    
+    // Update state when user changes value
     const updateCategory = (event) => {
         setCategory(event.target.value)
     }
@@ -38,6 +42,7 @@ function EditableListing(props) {
         setPrice(event.target.value)
     }
 
+    // Function for listing update
     async function updateListing() {
         let updatedListing = {id: props.id, name: name, description: description, category: category, price: price}
 
@@ -66,6 +71,7 @@ function EditableListing(props) {
         })
     }
 
+    // Function for deleting listing
     async function deleteListing() {
 
         if (window.confirm("Are you sure you want to delete " + name + " ?") === true) {
@@ -97,10 +103,12 @@ function EditableListing(props) {
           } 
     }
 
+    // Load categories in init
     React.useEffect(() => {
         getCategories()
       }, [])
     
+      // Similar to Listing, but with editable components
     return <Paper elevation={3} sx={{marginBottom: '1em', padding: '0.5em'}}>
         <Typography variant="h4" sx={{padding:'1em'}}>{props.name}</Typography>
         <Stack spacing={2} direction="column" sx={{paddingBottom: '1em'}}>

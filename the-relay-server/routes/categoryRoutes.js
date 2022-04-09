@@ -4,7 +4,7 @@ require('../db/mongoose')
 const Category = require('../db/category')
 const ObjectId = require("mongodb").ObjectId
 
-
+// Get all categories for filters and dialogs
 categoryRouter.route("/category/getAll").get(function (req, response) {
     Category.find({}).then((categories) => {
       response.status(200).send(categories)

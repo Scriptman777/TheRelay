@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const Account = require('./db/account')
 
+// JWT-based Authorization for some routes
 const auth = async (req, response, next) => {
     try {
         const token = req.header('Authorization').replace('Bearer ', '')

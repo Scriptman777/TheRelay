@@ -1,8 +1,9 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 
-
+// Schema for a listing
 const listingSchema = new mongoose.Schema({
+    // Listings are created by users
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -23,10 +24,12 @@ const listingSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    // Listing can be for sale or looking to purchase
     isSale: {
         type: Boolean,
         required: true,
     },
+    // Price cannot be negative, but could be 0 for giveaways
     price: {
         type: Number,
         required: true,
@@ -39,6 +42,7 @@ const listingSchema = new mongoose.Schema({
     }
     },
     {
+        // Virtuals should appear in JSON form
         toJSON: {virtuals: true}
     })
 

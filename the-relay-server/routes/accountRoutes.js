@@ -6,7 +6,9 @@ require('../db/mongoose')
 const Account = require('../db/account')
 auth = require("../authMiddleware")
 
+// Router for all account-related operations
 
+// Add an account
 accountRouter.route("/account/add").post(function (req, response) {
   bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
 
@@ -31,6 +33,7 @@ accountRouter.route("/account/add").post(function (req, response) {
     })
   })
 
+// Log the user in
 accountRouter.route("/account/login").post(function (req, response) {
   Account.findOne({username: req.body.username}).then((account) => {
       let check = bcrypt.compareSync(req.body.password, account.password)
@@ -49,6 +52,7 @@ accountRouter.route("/account/login").post(function (req, response) {
   })
 })
 
+// Log the user out
 accountRouter.route("/account/logout").get(auth, function (req, response) {
   Account.findOne({_id: req.user}).then((account) => {
      account.tokens = []
@@ -58,6 +62,7 @@ accountRouter.route("/account/logout").get(auth, function (req, response) {
   })
 })
 
+// Who am I? - utility for checking user
 accountRouter.route("/account/me").get(auth, function (req, response) {
   response.send(req.user.username)
 })

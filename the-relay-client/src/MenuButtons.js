@@ -2,15 +2,18 @@ import React from "react"
 import MenuItem from '@mui/material/MenuItem';
 import Link from '@mui/material/Link';
 
-
+// Component with buttons for the MenuBar
 function MenuButtons() {
 
+    // State for displaying login-specific options
     const [authed, setAuthed] = React.useState(false)
 
+    // Check on init
     React.useEffect(() => {
         CheckLogin()
     }, [])
 
+    // Check function
     async function CheckLogin(){
         const token = localStorage.getItem('auth-key')
         if (token == null) {
@@ -32,10 +35,10 @@ function MenuButtons() {
             else {
                 setAuthed(false) 
             }
-            
         })
     }
 
+    // Function for the logout option
     async function logout() {
         const token = localStorage.getItem('auth-key')
 
@@ -50,16 +53,16 @@ function MenuButtons() {
           })
     }
     
-
+    // Components to be displayed when logged out
     let logInOut = <Link color="black" underline="none" href="/login"><MenuItem key="Login">Login</MenuItem></Link>
     let myAcc = <></>
+    // Components to be displayed when logged in
     if (authed) {
         logInOut = <Link color="black" underline="none" href="/"><MenuItem key="Logout" onClick={logout}>Logout</MenuItem></Link>
         myAcc = <Link color="black" underline="none" href="/myaccount"><MenuItem key="MyAcc">My listings</MenuItem></Link>
     }
 
-
-
+    // Menu itself
     return <>
     <Link color="black" underline="none" href="/"><MenuItem>Main</MenuItem></Link>
     <Link color="black" underline="none" href="/about"><MenuItem key="About">About</MenuItem></Link>

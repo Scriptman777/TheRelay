@@ -93,6 +93,7 @@ function ListingItems(props) {
     const [name, setName] = React.useState('')
     const [description, setDescription] = React.useState('')
     const [price, setPrice] = React.useState('')
+    const [isForSale, setSale] = React.useState(props.isSale)
 
     //Create search states
     const [searchTerm, setSearchTerm] = React.useState('')
@@ -158,7 +159,7 @@ function ListingItems(props) {
     const createListing = async (event) => {
         event.preventDefault()
 
-        let newListing = {name: name, description: description, category: category, price: price, isSale: props.isSale}
+        let newListing = {name: name, description: description, category: category, price: price, isSale: isForSale}
 
         const headers = new Headers()
         headers.append('Content-Type', 'application/json')
@@ -216,6 +217,10 @@ function ListingItems(props) {
         setPrice(event.target.value)
     }
 
+    const updateSale = (event) => {
+        setSale(event.target.value)
+    }
+
     const openCreateDialog = (event) => {
         setDialogDisplay('block')
     }
@@ -238,7 +243,10 @@ function ListingItems(props) {
         <Typography variant='h2'>Create a new listing</Typography>
         <form onSubmit={createListing}>
         <Stack spacing={2} direction="column">
-        
+            <Select required id='crtSell' value={isForSale} onChange={updateSale}>
+                <MenuItem key={"Buy"} value={false}>{"I want to buy"}</MenuItem>
+                <MenuItem key={"Sell"} value={true}>{"I want to sell"}</MenuItem>
+            </Select>
             <TextField required id='crtName' label='Name' variant='outlined' onChange={updateName} value={name}/>
             <TextField required id='crtDescription' label='Description' variant='outlined' multiline onChange={updateDescription} value={description}/>
             <Select required id='crtCategory' value={category} onChange={updateCategory}>
@@ -246,6 +254,7 @@ function ListingItems(props) {
                 <MenuItem key={cat.name} value={cat.name}>{cat.name}</MenuItem>
                 ))}
             </Select>
+
             <TextField required id='crtPrice' label='Price' variant='outlined' InputProps={{endAdornment: <InputAdornment position="end"> CZK</InputAdornment>}} onChange={updatePrice} value={price}/>
             <Button variant="contained" type="submit">Create listing!</Button>
         
@@ -259,7 +268,7 @@ function ListingItems(props) {
         let displayedListings = <></>
         if (listings.length > 0) {
             displayedListings = listings.map((item) => (
-                <Listing key={item._id} name={item.name} description={item.description} price={item.price} user={item.user} category={item.category} />
+                <Listing key={item._id} name={item.name} description={item.description} price={item.price} user={item.user} category={item.category} isSale={props.isSale} />
             ))
         }
         else {
@@ -267,6 +276,7 @@ function ListingItems(props) {
         }
 
         return <ThemeProvider theme={theme}><Box sx={style}>
+        <Typography variant="h4" sx={{marginBottom: '1em'}}>{props.isSale ? 'Items for sale' : 'Listings looking to buy'}</Typography>
         <Accordion elevation={5} sx={{marginBottom: '1em'}}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}

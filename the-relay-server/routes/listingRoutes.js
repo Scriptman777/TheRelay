@@ -31,17 +31,23 @@ listingRouter.route("/listing/getUserListings").get(auth, function (req, respons
 // Update a listing
 listingRouter.route("/listing/update").patch(auth, function (req, response) {
   Listing.findById(req.body.id).then((updatedListing) => {
-    updatedListing.name = req.body.name
-    updatedListing.description = req.body.description
-    updatedListing.category = req.body.category
-    updatedListing.price = req.body.price
-  
-    updatedListing.save().then(() => {
-      response.status(201).send(updatedListing)
-    }).catch((e) => {
-      console.log(e)
-      response.status(500).send(e)
-    })
+    if (updatedListing) {
+      updatedListing.name = req.body.name
+      updatedListing.description = req.body.description
+      updatedListing.category = req.body.category
+      updatedListing.price = req.body.price
+    
+      updatedListing.save().then(() => {
+        response.status(201).send(updatedListing)
+      }).catch((e) => {
+        console.log(e)
+        response.status(500).send(e)
+      })
+    }
+    else {
+      response.status(404).send({message: "Listing ID does not match"})
+    }
+
   })
 })
 

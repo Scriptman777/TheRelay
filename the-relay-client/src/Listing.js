@@ -41,7 +41,7 @@ function Listing(props) {
                         <PointOfSaleIcon />
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary="Price" secondary={props.price + " CZK"} />
+                <ListItemText primary={props.isSale ? 'Price' : 'Max price'} secondary={props.price + " CZK"} />
             </ListItem>
         </List>
         

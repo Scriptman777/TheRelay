@@ -43,7 +43,9 @@ function EditableListing(props) {
     }
 
     // Function for listing update
-    async function updateListing() {
+    const updateListing = async (event) => {
+        event.preventDefault()
+
         let updatedListing = {id: props.id, name: name, description: description, category: category, price: price}
 
         const headers = new Headers()
@@ -51,7 +53,7 @@ function EditableListing(props) {
         headers.append('Authorization', localStorage.getItem('auth-key'))
 
         await fetch("http://localhost:5000/listing/update", {
-            method: "POST",
+            method: "PATCH",
             headers: headers,
             body: JSON.stringify(updatedListing),
             })
@@ -72,7 +74,7 @@ function EditableListing(props) {
     }
 
     // Function for deleting listing
-    async function deleteListing() {
+    const deleteListing = async (event) => {
 
         if (window.confirm("Are you sure you want to delete " + name + " ?") === true) {
             const headers = new Headers()
@@ -82,7 +84,7 @@ function EditableListing(props) {
             let listingToDelete = {id: props.id}
     
             await fetch("http://localhost:5000/listing/delete", {
-                method: "POST",
+                method: "DELETE",
                 headers: headers,
                 body: JSON.stringify(listingToDelete),
                 })
@@ -110,24 +112,23 @@ function EditableListing(props) {
     
       // Similar to Listing, but with editable components
     return <Paper elevation={3} sx={{marginBottom: '1em', padding: '0.5em'}}>
+        <form onSubmit={updateListing}>
         <Typography variant="h4" sx={{padding:'1em'}}>{props.name}</Typography>
         <Stack spacing={2} direction="column" sx={{paddingBottom: '1em'}}>
-        <TextField id='lstName' label='Name' variant='outlined' onChange={updateName} value={name}/>
-        <TextField id='lstDescription' label='Description' variant='outlined' multiline onChange={updateDescription} value={description}/>
-        <Select id='crtCategory' value={category} onChange={updateCategory}>
+        <TextField required id='lstName' label='Name' variant='outlined' onChange={updateName} value={name}/>
+        <TextField required id='lstDescription' label='Description' variant='outlined' multiline onChange={updateDescription} value={description}/>
+        <Select required id='crtCategory' value={category} onChange={updateCategory}>
                 {allCategories.map((cat) => (
                 <MenuItem key={cat.name} value={cat.name}>{cat.name}</MenuItem>
                 ))}
         </Select>
-        <TextField id='crtPrice' label='Price' variant='outlined' InputProps={{endAdornment: <InputAdornment position="end"> CZK</InputAdornment>}} onChange={updatePrice} value={price}/>
-
+        <TextField required vid='crtPrice' label='Price' variant='outlined' InputProps={{endAdornment: <InputAdornment position="end"> CZK</InputAdornment>}} onChange={updatePrice} value={price}/>
         </Stack>
-
         <Stack spacing={2} direction="row">
-        <Button variant="contained" onClick={updateListing}>Update listing</Button>
+        <Button variant="contained" type="submit">Update listing</Button>
         <Button variant="contained" onClick={deleteListing} sx={{backgroundColor: 'red'}}>Delete listing</Button>
         </Stack>
-
+        </form>           
     </Paper>
 }
 

@@ -2,6 +2,7 @@ import React from "react"
 import Listing from "./Listing"
 import Box from '@mui/material/Box'
 import Fab from '@mui/material/Fab'
+import NoListings from "./NoListings"
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Slider from '@mui/material/Slider'
@@ -10,17 +11,18 @@ import Button from '@mui/material/Button'
 import  { Navigate } from 'react-router-dom'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
+import Accordion from '@mui/material/Accordion'
 import EditIcon from '@mui/icons-material/Edit'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-import { GetTheme, GetPaddedStyle } from './theme.js'
 import { ThemeProvider } from '@mui/material/styles'
+import { GetTheme, GetPaddedStyle } from './theme.js'
 import InputAdornment from '@mui/material/InputAdornment'
-import Accordion from '@mui/material/Accordion'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+
 
 // Main page for displaying listings, both for sale and purchase (determined by props)
 function ListingItems(props) {
@@ -152,8 +154,10 @@ function ListingItems(props) {
         getListings()
     }
 
-    // Creating listing from the dialog
+    // Creating listing from the dialog by submit
     const createListing = async (event) => {
+        event.preventDefault()
+
         let newListing = {name: name, description: description, category: category, price: price, isSale: props.isSale}
 
         const headers = new Headers()
@@ -165,17 +169,22 @@ function ListingItems(props) {
             headers: headers,
             body: JSON.stringify(newListing),
             })
-            .then(
-            setName(''),
-            setDescription(''),
+            .then(response => {
+            if (response.status !== 201) {
+                response.json().then(data => window.alert("Could not create listing because of the following error:\n" + data.message))
+                return
+            }
+            setName('')
+            setDescription('')
             setPrice('')
-            )
+            closeCreateDialog()
+            getListings()
+            })
             .catch(err => {
                 window.alert("An error occured when creating listing:\n" + err + "\n If the problem presists, contact the site administrators")
             return
         })
-        closeCreateDialog()
-        getListings()
+
     }
 
     // State updates from user input
@@ -227,22 +236,36 @@ function ListingItems(props) {
         <CloseIcon />
         </IconButton>
         <Typography variant='h2'>Create a new listing</Typography>
+        <form onSubmit={createListing}>
         <Stack spacing={2} direction="column">
-            <TextField id='crtName' label='Name' variant='outlined' onChange={updateName} value={name}/>
-            <TextField id='crtDescription' label='Description' variant='outlined' multiline onChange={updateDescription} value={description}/>
-            <Select id='crtCategory' value={category} onChange={updateCategory}>
+        
+            <TextField required id='crtName' label='Name' variant='outlined' onChange={updateName} value={name}/>
+            <TextField required id='crtDescription' label='Description' variant='outlined' multiline onChange={updateDescription} value={description}/>
+            <Select required id='crtCategory' value={category} onChange={updateCategory}>
                 {allCategories.map((cat) => (
                 <MenuItem key={cat.name} value={cat.name}>{cat.name}</MenuItem>
                 ))}
             </Select>
-            <TextField id='crtPrice' label='Price' variant='outlined' InputProps={{endAdornment: <InputAdornment position="end"> CZK</InputAdornment>}} onChange={updatePrice} value={price}/>
-            <Button variant="contained" onClick={createListing}>Create listing!</Button>
+            <TextField required id='crtPrice' label='Price' variant='outlined' InputProps={{endAdornment: <InputAdornment position="end"> CZK</InputAdornment>}} onChange={updatePrice} value={price}/>
+            <Button variant="contained" type="submit">Create listing!</Button>
+        
         </Stack>
+        </form>
     </Paper>
     </Box>
     
     // If user is not logged, redirect to login
     if (authed) {
+        let displayedListings = <></>
+        if (listings.length > 0) {
+            displayedListings = listings.map((item) => (
+                <Listing key={item._id} name={item.name} description={item.description} price={item.price} user={item.user} category={item.category} />
+            ))
+        }
+        else {
+            displayedListings = <NoListings />
+        }
+
         return <ThemeProvider theme={theme}><Box sx={style}>
         <Accordion elevation={5} sx={{marginBottom: '1em'}}>
         <AccordionSummary
@@ -271,9 +294,7 @@ function ListingItems(props) {
         </AccordionDetails>
       </Accordion>
         
-        {listings.map((item) => (
-            <Listing key={item._id} name={item.name} description={item.description} price={item.price} user={item.user} category={item.category} />
-        ))}
+        {displayedListings}
 
         <Fab onClick={openCreateDialog} color="primary" sx={{ position: 'fixed', bottom: '10vh', right: '10vw' }}><EditIcon /></Fab>
         {createDialog}

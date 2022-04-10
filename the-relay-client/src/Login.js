@@ -11,6 +11,7 @@ function Login(props) {
 
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
+    const [passwordCheck, setPasswordCheck] = React.useState('')
     const [email, setEmail] = React.useState('')
 
 
@@ -22,9 +23,13 @@ function Login(props) {
         setPassword(event.target.value)
     }
 
+    const passwordCheckUpdate = (event) => {
+      setPasswordCheck(event.target.value)
+    }
+
     const emailUpdate = (event) => {
       setEmail(event.target.value)
-  }
+    }
 
     const style = GetPaddedStyle()
     style.maxWidth = 500
@@ -32,46 +37,37 @@ function Login(props) {
     let name = "Create account"
     let createPrompt = <></>
     let emailField = <></>
-
-    if (!props.create) {
-        createPrompt = <Typography variant="body2">
-        Don't have an account? Why not <Link underline='none' href="/signup">create one</Link>?
-        </Typography>
-        name = "Log in"
-    }
-    else 
-    {
-      emailField = <TextField id='email' label='E-mail' variant='outlined' onChange={emailUpdate} value={email}/>
-    }
+    let passCheckField = <></>
 
     
-    const buttonClicked = async (event) => {
-
+    const submitLogin = async (event) => {
+        event.preventDefault()
         if (props.create) {
-            
-            let newAccount = {username: username, email: email, password: password}
+            if (password === passwordCheck) {
+              let newAccount = {username: username, email: email, password: password}
 
-            await fetch("http://localhost:5000/account/add", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newAccount),
+              await fetch("http://localhost:5000/account/add", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(newAccount),
+                })
+                .then(response => {
+                  if (response.status !== 201) {
+                    response.json().then(data => window.alert("Could not create account because of the following error:\n" + data.message))
+                    return
+                  }
+                  setUsername('')
+                  setPassword('')
+                  setEmail('')
+                  document.location.href="/login"
               })
-              .then(response => {
-                if (response.status !== 201) {
-                  response.json().then(data => window.alert("Could not create account because of the following error:\n" + data.message))
-                  return
-                }
-                setUsername('')
-                setPassword('')
-                setEmail('')
-                document.location.href="/login"
-            })
-            .catch(err => {
-              window.alert("Could not create account because of the following error:\n" + err)
-            return
-            })
+              .catch(err => {
+                window.alert("Could not create account because of the following error:\n" + err)
+              return
+              })
+            }
         }
         else {
           let loginInfo = {username: username, password: password}
@@ -103,18 +99,33 @@ function Login(props) {
               })
         }
     }
+
+    if (!props.create) {
+      createPrompt = <Typography variant="body2">
+      Don't have an account? Why not <Link underline='none' href="/signup">create one</Link>?
+      </Typography>
+      name = "Log in"
+    }
+    else 
+    {
+      emailField = <TextField required id='email' label='E-mail' variant='outlined' onChange={emailUpdate} value={email}/>
+      passCheckField = <TextField required id='pass2' label='Confirm pasword' variant='outlined' type="password" helperText={password !== passwordCheck ? 'Password does not match!' : ' '} error={password !== passwordCheck} onChange={passwordCheckUpdate} value={passwordCheck}/>
+    }
     
     return <Paper elevation={3} sx={style}>
+    <form onSubmit={submitLogin}> 
     <Typography variant="h2">
     {name}
     </Typography>
     <Stack spacing={2} direction="column">
-    <TextField id='username' label='Username' variant='outlined' onChange={usernameUpdate} value={username}/>
+    <TextField required id='username' label='Username' variant='outlined' onChange={usernameUpdate} value={username}/>
     {emailField}
-    <TextField id='password' label='Password' variant='outlined' onChange={passwordUpdate} value={password} type="password" autoComplete="current-password" />
-    <Button variant="contained" onClick={buttonClicked}>{name}!</Button>
+    <TextField required id='password' label='Password' variant='outlined' onChange={passwordUpdate} value={password} type="password" autoComplete="current-password" />
+    {passCheckField}
+    <Button variant="contained" type="submit">{name}!</Button>
     {createPrompt}
     </Stack>
+    </form>
     </Paper>
 }
 

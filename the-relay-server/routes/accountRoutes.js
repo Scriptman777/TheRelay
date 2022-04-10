@@ -18,11 +18,17 @@ accountRouter.route("/account/add").post(function (req, response) {
       password: hash 
       })
 
-      Account.findOne({email: newAccount.email}).then((exists) => {
-        if (exists) { 
-          response.status(400).send({message: "Entered e-mail already in use"})
+      Account.findOne({$or: [{email: newAccount.email}, {username: newAccount.username}]}).then((found) => {
+        if (found){
+          if (found.email === newAccount.email) { 
+            response.status(400).send({message: "Entered e-mail already in use"})
+          }
+          else if (found.username === newAccount.username) {
+            response.status(400).send({message: "Entered username already in use"})
+          }
         }
-        else {
+        else
+        {
           newAccount.save().then(() => {
             response.status(201).send(newAccount)
           }).catch((e) => {
@@ -64,7 +70,7 @@ accountRouter.route("/account/logout").get(auth, function (req, response) {
 
 // Who am I? - utility for checking user
 accountRouter.route("/account/me").get(auth, function (req, response) {
-  response.send(req.user.username)
+  response.send({username: req.user.username})
 })
 
 

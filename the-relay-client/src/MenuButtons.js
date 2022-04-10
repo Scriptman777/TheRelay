@@ -7,6 +7,7 @@ function MenuButtons() {
 
     // State for displaying login-specific options
     const [authed, setAuthed] = React.useState(false)
+    const [user, setUser] = React.useState('')
 
     // Check on init
     React.useEffect(() => {
@@ -30,6 +31,7 @@ function MenuButtons() {
           })
           .then(function(response) {
             if (response.status === 200) {
+                response.json().then(data => setUser(data.username))
                 setAuthed(true)
             }
             else {
@@ -59,7 +61,7 @@ function MenuButtons() {
     // Components to be displayed when logged in
     if (authed) {
         logInOut = <Link color="black" underline="none" href="/"><MenuItem key="Logout" onClick={logout}>Logout</MenuItem></Link>
-        myAcc = <Link color="black" underline="none" href="/myaccount"><MenuItem key="MyAcc">My listings</MenuItem></Link>
+        myAcc = <Link color="black" underline="none" href="/myaccount"><MenuItem key="MyAcc">{'My listings (' + user + ')'}</MenuItem></Link>
     }
 
     // Menu itself

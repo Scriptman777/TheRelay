@@ -5,6 +5,7 @@ import { GetTheme, GetPaddedStyle } from './theme.js'
 import { ThemeProvider } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import NoListings from "./NoListings"
 
 // Screen with user's listings
 function Account() {
@@ -70,12 +71,24 @@ function Account() {
 
     // Display site only if user is logged in, otherwise go to login
     if (authed) {
-        return <ThemeProvider theme={theme}><Box sx={style}>
-            
+        let displayedListings = <></>
+        if (listings.length > 0) {
+            displayedListings = listings.map((item) => (
+                <EditableListing key={item._id} id={item._id} name={item.name} description={item.description} price={item.price} user={item.user} category={item.category} />
+            ))
+        }
+        else {
+            displayedListings = <NoListings />
+        }
+        
+
+
+        return <ThemeProvider theme={theme}>
+            <Box sx={style}>
             <Typography variant="h3" sx={{padding:'1em'}}>My listings</Typography>
-            {listings.map((item) => (
-            <EditableListing key={item._id} id={item._id} name={item.name} description={item.description} price={item.price} user={item.user} category={item.category} />
-        ))}</Box></ThemeProvider>
+            {displayedListings}
+            </Box>
+            </ThemeProvider>
         
     }
     return <Navigate to='/login' />  
